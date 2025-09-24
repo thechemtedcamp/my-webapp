@@ -1,609 +1,106 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QC Alert Management System</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Sarabun', sans-serif; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QC Alert System</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
-    <div class="container mx-auto px-4 py-8">
-        <!-- Header -->
-        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-            <h1 class="text-3xl font-bold text-gray-800 mb-2">ระบบจัดการการแจ้งเตือน QC</h1>
-            <p class="text-gray-600">บันทึกและติดตามการแจ้งเตือนและการเปลี่ยนแปลงในแผนก QC</p>
-        </div>
+<body class="bg-gray-100 p-4">
 
-        <!-- Add New Alert Form -->
-        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">เพิ่มการแจ้งเตือนใหม่</h2>
-            <form id="alertForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">หัวข้อ</label>
-                    <input type="text" id="title" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">ประเภท</label>
-                    <select id="category" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        <option value="">เลือกประเภท</option>
-                        <option value="quality-issue">ปัญหาคุณภาพ</option>
-                        <option value="process-change">การเปลี่ยนแปลงกระบวนการ</option>
-                        <option value="equipment">อุปกรณ์</option>
-                        <option value="safety">ความปลอดภัย</option>
-                        <option value="training">การฝึกอบรม</option>
-                        <option value="other">อื่นๆ</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">ระดับความสำคัญ</label>
-                    <select id="priority" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        <option value="">เลือกระดับ</option>
-                        <option value="high">สูง</option>
-                        <option value="medium">ปานกลาง</option>
-                        <option value="low">ต่ำ</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">ผู้รับผิดชอบ</label>
-                    <input type="text" id="assignee" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                </div>
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">รายละเอียด</label>
-                    <textarea id="description" rows="3" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
-                </div>
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">แนบรูปภาพ (ไม่บังคับ)</label>
-                    <input type="file" id="imageUpload" accept="image/*" multiple class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <p class="text-sm text-gray-500 mt-1">รองรับไฟล์ JPG, PNG, GIF (สามารถเลือกหลายไฟล์)</p>
-                    <div id="imagePreview" class="mt-3 grid grid-cols-2 md:grid-cols-4 gap-3"></div>
-                </div>
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">แนบไฟล์เอกสาร (ไม่บังคับ)</label>
-                    <input type="file" id="fileUpload" multiple class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <p class="text-sm text-gray-500 mt-1">รองรับไฟล์ PDF, DOC, DOCX, XLS, XLSX, TXT และอื่นๆ (สามารถเลือกหลายไฟล์)</p>
-                    <div id="filePreview" class="mt-3 space-y-2"></div>
-                </div>
-                <div class="md:col-span-2">
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-                        บันทึกการแจ้งเตือน
-                    </button>
-                </div>
-            </form>
-        </div>
+<h1 class="text-2xl font-bold mb-4">ระบบแจ้งเตือน QC</h1>
 
-        <!-- Search and Filter -->
-        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">ค้นหาและกรอง</h2>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <input type="text" id="searchInput" placeholder="ค้นหา..." class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                <select id="filterCategory" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <option value="">ทุกประเภท</option>
-                    <option value="quality-issue">ปัญหาคุณภาพ</option>
-                    <option value="process-change">การเปลี่ยนแปลงกระบวนการ</option>
-                    <option value="equipment">อุปกรณ์</option>
-                    <option value="safety">ความปลอดภัย</option>
-                    <option value="training">การฝึกอบรม</option>
-                    <option value="other">อื่นๆ</option>
-                </select>
-                <select id="filterPriority" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <option value="">ทุกระดับ</option>
-                    <option value="high">สูง</option>
-                    <option value="medium">ปานกลาง</option>
-                    <option value="low">ต่ำ</option>
-                </select>
-                <select id="filterStatus" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <option value="">ทุกสถานะ</option>
-                    <option value="open">เปิด</option>
-                    <option value="in-progress">กำลังดำเนินการ</option>
-                    <option value="resolved">แก้ไขแล้ว</option>
-                </select>
-            </div>
-        </div>
+<form id="alertForm" class="bg-white p-4 rounded shadow-md space-y-4">
+  <input type="text" id="title" placeholder="หัวข้อ" required class="w-full border px-2 py-1 rounded">
+  <input type="text" id="category" placeholder="ประเภท" required class="w-full border px-2 py-1 rounded">
+  <input type="text" id="priority" placeholder="ระดับความสำคัญ" required class="w-full border px-2 py-1 rounded">
+  <input type="text" id="assignee" placeholder="ผู้รับผิดชอบ" required class="w-full border px-2 py-1 rounded">
+  <textarea id="description" placeholder="รายละเอียด" required class="w-full border px-2 py-1 rounded"></textarea>
+  <input type="file" id="images" accept="image/*" multiple>
+  <input type="file" id="files" multiple>
+  <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">บันทึก</button>
+</form>
 
-        <!-- Alerts List -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">รายการการแจ้งเตือน</h2>
-            <div id="alertsList" class="space-y-4">
-                <!-- Sample data will be populated here -->
-            </div>
-        </div>
+<h2 class="text-xl font-semibold mt-6 mb-2">รายการแจ้งเตือน</h2>
+<div id="alertsList" class="space-y-2"></div>
+
+<script>
+const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbxHnehs-MNq-Iivid_6DeA7RNcvT4YxxO2SUpQG_W_yNH2UbhbrsJ6Ea8nDL6ynRQJ7/exec"; // เปลี่ยนเป็น URL ของ Apps Script
+
+let alerts = [];
+
+// Convert file to Base64
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve({ name: file.name, base64: reader.result.split(',')[1], mimeType: file.type });
+    reader.onerror = error => reject(error);
+    reader.readAsDataURL(file);
+  });
+}
+
+// Fetch alerts from sheet
+function fetchAlerts() {
+  fetch(SHEET_API_URL)
+    .then(res => res.json())
+    .then(data => {
+      alerts = data.reverse();
+      renderAlerts();
+    });
+}
+
+// Render alerts
+function renderAlerts() {
+  const container = document.getElementById('alertsList');
+  if(alerts.length===0){ container.innerHTML = "<p>ไม่มีข้อมูล</p>"; return; }
+  container.innerHTML = alerts.map(a => `
+    <div class="bg-white p-3 rounded shadow">
+      <div class="font-bold">${a.title}</div>
+      <div>ประเภท: ${a.category} | ผู้รับผิดชอบ: ${a.assignee}</div>
+      <div>รายละเอียด: ${a.description}</div>
+      ${a.images.length>0 ? `<div>รูป: ${JSON.parse(a.images).map(u=>`<a href="${u}" target="_blank">📷</a>`).join(" ")}</div>` : ""}
+      ${a.files.length>0 ? `<div>ไฟล์: ${JSON.parse(a.files).map(u=>`<a href="${u}" target="_blank">📎</a>`).join(" ")}</div>` : ""}
     </div>
+  `).join('');
+}
 
-    <!-- Alert Detail Modal -->
-    <div id="alertModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-semibold text-gray-800">รายละเอียดการแจ้งเตือน</h3>
-                <button id="closeModal" class="text-gray-500 hover:text-gray-700">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-            <div id="modalContent">
-                <!-- Modal content will be populated here -->
-            </div>
-        </div>
-    </div>
+// Handle form submit
+document.getElementById('alertForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const imageFiles = Array.from(document.getElementById('images').files);
+  const docFiles = Array.from(document.getElementById('files').files);
+  const images = await Promise.all(imageFiles.map(f=>fileToBase64(f)));
+  const files = await Promise.all(docFiles.map(f=>fileToBase64(f)));
 
-    <!-- Image Viewer Modal -->
-    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-90 hidden items-center justify-center z-60">
-        <div class="relative max-w-4xl max-h-[90vh] mx-4">
-            <button id="closeImageModal" class="absolute -top-10 right-0 text-white hover:text-gray-300 text-2xl">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-            <img id="fullImage" src="" alt="" class="max-w-full max-h-[90vh] object-contain rounded-lg">
-            <div id="imageInfo" class="text-white text-center mt-4 text-sm"></div>
-        </div>
-    </div>
+  const newAlert = {
+    id: Date.now(),
+    title: document.getElementById('title').value,
+    category: document.getElementById('category').value,
+    priority: document.getElementById('priority').value,
+    status: 'open',
+    assignee: document.getElementById('assignee').value,
+    description: document.getElementById('description').value,
+    images, files
+  };
 
-    <script>
-        // Sample data for demonstration
-        let alerts = [
-            {
-                id: 1,
-                title: "ตรวจพบสินค้าไม่ผ่านมาตรฐาน Lot ABC123",
-                category: "quality-issue",
-                priority: "high",
-                status: "open",
-                assignee: "คุณสมชาย",
-                description: "พบสินค้าในล็อต ABC123 มีคุณภาพไม่ผ่านเกณฑ์ที่กำหนด ต้องหยุดการผลิตและตรวจสอบกระบวนการ",
-                images: [],
-                files: [],
-                createdAt: new Date('2024-01-15T10:30:00'),
-                updatedAt: new Date('2024-01-15T10:30:00')
-            },
-            {
-                id: 2,
-                title: "เปลี่ยนแปลงขั้นตอนการตรวจสอบคุณภาพ",
-                category: "process-change",
-                priority: "medium",
-                status: "in-progress",
-                assignee: "คุณสมหญิง",
-                description: "มีการปรับปรุงขั้นตอนการตรวจสอบคุณภาพใหม่ ต้องแจ้งให้ทีมงานทราบและฝึกอบรม",
-                images: [],
-                files: [],
-                createdAt: new Date('2024-01-14T14:20:00'),
-                updatedAt: new Date('2024-01-15T09:15:00')
-            }
-        ];
+  fetch(SHEET_API_URL, {
+    method: 'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(newAlert)
+  })
+  .then(res=>res.json())
+  .then(resp=>{
+    if(resp.success){
+      alert("บันทึกสำเร็จ");
+      this.reset();
+      fetchAlerts();
+    }
+  });
+});
 
-        const categoryLabels = {
-            'quality-issue': 'ปัญหาคุณภาพ',
-            'process-change': 'การเปลี่ยนแปลงกระบวนการ',
-            'equipment': 'อุปกรณ์',
-            'safety': 'ความปลอดภัย',
-            'training': 'การฝึกอบรม',
-            'other': 'อื่นๆ'
-        };
+// initial fetch
+fetchAlerts();
+</script>
 
-        const priorityLabels = {
-            'high': 'สูง',
-            'medium': 'ปานกลาง',
-            'low': 'ต่ำ'
-        };
-
-        const statusLabels = {
-            'open': 'เปิด',
-            'in-progress': 'กำลังดำเนินการ',
-            'resolved': 'แก้ไขแล้ว'
-        };
-
-        const priorityColors = {
-            'high': 'bg-red-100 text-red-800',
-            'medium': 'bg-yellow-100 text-yellow-800',
-            'low': 'bg-green-100 text-green-800'
-        };
-
-        const statusColors = {
-            'open': 'bg-blue-100 text-blue-800',
-            'in-progress': 'bg-orange-100 text-orange-800',
-            'resolved': 'bg-green-100 text-green-800'
-        };
-
-        // Image preview functionality
-        document.getElementById('imageUpload').addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
-            const preview = document.getElementById('imagePreview');
-            preview.innerHTML = '';
-
-            files.forEach((file, index) => {
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const imageContainer = document.createElement('div');
-                        imageContainer.className = 'relative group';
-                        imageContainer.innerHTML = `
-                            <img src="${e.target.result}" alt="Preview ${index + 1}" class="w-full h-24 object-cover rounded-lg border">
-                            <button type="button" onclick="removeImage(${index})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 text-xs hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity">×</button>
-                            <div class="text-xs text-gray-500 mt-1 truncate">${file.name}</div>
-                        `;
-                        preview.appendChild(imageContainer);
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-        });
-
-        // File preview functionality
-        document.getElementById('fileUpload').addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
-            const preview = document.getElementById('filePreview');
-            preview.innerHTML = '';
-
-            files.forEach((file, index) => {
-                const fileContainer = document.createElement('div');
-                fileContainer.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg border';
-                
-                const fileIcon = getFileIcon(file.type, file.name);
-                const fileSize = (file.size / 1024).toFixed(1);
-                
-                fileContainer.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <div class="text-2xl">${fileIcon}</div>
-                        <div>
-                            <div class="text-sm font-medium text-gray-800 truncate max-w-xs">${file.name}</div>
-                            <div class="text-xs text-gray-500">${fileSize} KB</div>
-                        </div>
-                    </div>
-                    <button type="button" onclick="removeFile(${index})" class="text-red-500 hover:text-red-700 text-sm">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                `;
-                preview.appendChild(fileContainer);
-            });
-        });
-
-        // Get file icon based on file type
-        function getFileIcon(fileType, fileName) {
-            const extension = fileName.split('.').pop().toLowerCase();
-            
-            if (fileType.includes('pdf') || extension === 'pdf') return '📄';
-            if (fileType.includes('word') || ['doc', 'docx'].includes(extension)) return '📝';
-            if (fileType.includes('excel') || fileType.includes('spreadsheet') || ['xls', 'xlsx'].includes(extension)) return '📊';
-            if (fileType.includes('powerpoint') || ['ppt', 'pptx'].includes(extension)) return '📋';
-            if (fileType.includes('text') || extension === 'txt') return '📃';
-            if (fileType.includes('zip') || fileType.includes('rar') || ['zip', 'rar', '7z'].includes(extension)) return '🗜️';
-            if (fileType.includes('video') || ['mp4', 'avi', 'mov'].includes(extension)) return '🎥';
-            if (fileType.includes('audio') || ['mp3', 'wav', 'ogg'].includes(extension)) return '🎵';
-            
-            return '📎';
-        }
-
-        // Remove image from preview
-        function removeImage(index) {
-            const fileInput = document.getElementById('imageUpload');
-            const dt = new DataTransfer();
-            const files = Array.from(fileInput.files);
-            
-            files.forEach((file, i) => {
-                if (i !== index) {
-                    dt.items.add(file);
-                }
-            });
-            
-            fileInput.files = dt.files;
-            fileInput.dispatchEvent(new Event('change'));
-        }
-
-        // Remove file from preview
-        function removeFile(index) {
-            const fileInput = document.getElementById('fileUpload');
-            const dt = new DataTransfer();
-            const files = Array.from(fileInput.files);
-            
-            files.forEach((file, i) => {
-                if (i !== index) {
-                    dt.items.add(file);
-                }
-            });
-            
-            fileInput.files = dt.files;
-            fileInput.dispatchEvent(new Event('change'));
-        }
-
-        // Form submission
-        document.getElementById('alertForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const imageFiles = Array.from(document.getElementById('imageUpload').files);
-            const documentFiles = Array.from(document.getElementById('fileUpload').files);
-            const images = [];
-            const files = [];
-            
-            // Convert images to base64 for storage
-            const processImages = imageFiles.map(file => {
-                return new Promise((resolve) => {
-                    if (file.type.startsWith('image/')) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            images.push({
-                                name: file.name,
-                                data: e.target.result,
-                                size: file.size,
-                                type: file.type
-                            });
-                            resolve();
-                        };
-                        reader.readAsDataURL(file);
-                    } else {
-                        resolve();
-                    }
-                });
-            });
-
-            // Convert files to base64 for storage
-            const processFiles = documentFiles.map(file => {
-                return new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        files.push({
-                            name: file.name,
-                            data: e.target.result,
-                            size: file.size,
-                            type: file.type
-                        });
-                        resolve();
-                    };
-                    reader.readAsDataURL(file);
-                });
-            });
-
-            Promise.all([...processImages, ...processFiles]).then(() => {
-                const newAlert = {
-                    id: alerts.length + 1,
-                    title: document.getElementById('title').value,
-                    category: document.getElementById('category').value,
-                    priority: document.getElementById('priority').value,
-                    status: 'open',
-                    assignee: document.getElementById('assignee').value,
-                    description: document.getElementById('description').value,
-                    images: images,
-                    files: files,
-                    createdAt: new Date(),
-                    updatedAt: new Date()
-                };
-
-                alerts.unshift(newAlert);
-                renderAlerts();
-                this.reset();
-                document.getElementById('imagePreview').innerHTML = '';
-                document.getElementById('filePreview').innerHTML = '';
-                
-                // Show success message
-                alert('บันทึกการแจ้งเตือนเรียบร้อยแล้ว');
-            });
-        });
-
-        // Search and filter functionality
-        function setupFilters() {
-            const searchInput = document.getElementById('searchInput');
-            const filterCategory = document.getElementById('filterCategory');
-            const filterPriority = document.getElementById('filterPriority');
-            const filterStatus = document.getElementById('filterStatus');
-
-            [searchInput, filterCategory, filterPriority, filterStatus].forEach(element => {
-                element.addEventListener('input', renderAlerts);
-            });
-        }
-
-        // Render alerts list
-        function renderAlerts() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const categoryFilter = document.getElementById('filterCategory').value;
-            const priorityFilter = document.getElementById('filterPriority').value;
-            const statusFilter = document.getElementById('filterStatus').value;
-
-            let filteredAlerts = alerts.filter(alert => {
-                const matchesSearch = alert.title.toLowerCase().includes(searchTerm) || 
-                                    alert.description.toLowerCase().includes(searchTerm) ||
-                                    alert.assignee.toLowerCase().includes(searchTerm);
-                const matchesCategory = !categoryFilter || alert.category === categoryFilter;
-                const matchesPriority = !priorityFilter || alert.priority === priorityFilter;
-                const matchesStatus = !statusFilter || alert.status === statusFilter;
-
-                return matchesSearch && matchesCategory && matchesPriority && matchesStatus;
-            });
-
-            const alertsList = document.getElementById('alertsList');
-            
-            if (filteredAlerts.length === 0) {
-                alertsList.innerHTML = '<p class="text-gray-500 text-center py-8">ไม่พบข้อมูลการแจ้งเตือน</p>';
-                return;
-            }
-
-            alertsList.innerHTML = filteredAlerts.map(alert => `
-                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer" onclick="showAlertDetail(${alert.id})">
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="font-semibold text-gray-800 flex-1">${alert.title}</h3>
-                        <div class="flex gap-2 ml-4">
-                            ${alert.images && alert.images.length > 0 ? `<span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">📷 ${alert.images.length}</span>` : ''}
-                            ${alert.files && alert.files.length > 0 ? `<span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">📎 ${alert.files.length}</span>` : ''}
-                            <span class="px-2 py-1 text-xs rounded-full ${priorityColors[alert.priority]}">${priorityLabels[alert.priority]}</span>
-                            <span class="px-2 py-1 text-xs rounded-full ${statusColors[alert.status]}">${statusLabels[alert.status]}</span>
-                        </div>
-                    </div>
-                    <div class="text-sm text-gray-600 mb-2">
-                        <span class="font-medium">ประเภท:</span> ${categoryLabels[alert.category]} | 
-                        <span class="font-medium">ผู้รับผิดชอบ:</span> ${alert.assignee}
-                    </div>
-                    <p class="text-gray-700 text-sm mb-2">${alert.description.substring(0, 100)}${alert.description.length > 100 ? '...' : ''}</p>
-                    <div class="text-xs text-gray-500">
-                        สร้างเมื่อ: ${alert.createdAt.toLocaleDateString('th-TH')} ${alert.createdAt.toLocaleTimeString('th-TH', {hour: '2-digit', minute: '2-digit'})}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Show alert detail modal
-        function showAlertDetail(alertId) {
-            const alert = alerts.find(a => a.id === alertId);
-            if (!alert) return;
-
-            const modalContent = document.getElementById('modalContent');
-            modalContent.innerHTML = `
-                <div class="space-y-4">
-                    <div>
-                        <h4 class="font-semibold text-gray-800 mb-2">หัวข้อ</h4>
-                        <p class="text-gray-700">${alert.title}</p>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <h4 class="font-semibold text-gray-800 mb-2">ประเภท</h4>
-                            <p class="text-gray-700">${categoryLabels[alert.category]}</p>
-                        </div>
-                        <div>
-                            <h4 class="font-semibold text-gray-800 mb-2">ระดับความสำคัญ</h4>
-                            <span class="px-2 py-1 text-sm rounded-full ${priorityColors[alert.priority]}">${priorityLabels[alert.priority]}</span>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <h4 class="font-semibold text-gray-800 mb-2">สถานะ</h4>
-                            <span class="px-2 py-1 text-sm rounded-full ${statusColors[alert.status]}">${statusLabels[alert.status]}</span>
-                        </div>
-                        <div>
-                            <h4 class="font-semibold text-gray-800 mb-2">ผู้รับผิดชอบ</h4>
-                            <p class="text-gray-700">${alert.assignee}</p>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="font-semibold text-gray-800 mb-2">รายละเอียด</h4>
-                        <p class="text-gray-700 whitespace-pre-wrap">${alert.description}</p>
-                    </div>
-                    ${alert.images && alert.images.length > 0 ? `
-                    <div>
-                        <h4 class="font-semibold text-gray-800 mb-2">รูปภาพแนบ (${alert.images.length} ไฟล์)</h4>
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                            ${alert.images.map((image, index) => `
-                                <div class="relative group">
-                                    <img src="${image.data}" alt="${image.name}" class="w-full h-32 object-cover rounded-lg border cursor-pointer hover:opacity-75 transition-opacity" onclick="viewFullImage('${image.data}', '${image.name}')">
-                                    <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-2 rounded-b-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <div class="truncate">${image.name}</div>
-                                        <div>${(image.size / 1024).toFixed(1)} KB</div>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                    ` : ''}
-                    ${alert.files && alert.files.length > 0 ? `
-                    <div>
-                        <h4 class="font-semibold text-gray-800 mb-2">ไฟล์แนบ (${alert.files.length} ไฟล์)</h4>
-                        <div class="space-y-2">
-                            ${alert.files.map((file, index) => `
-                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border hover:bg-gray-100 transition-colors">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="text-2xl">${getFileIcon(file.type, file.name)}</div>
-                                        <div>
-                                            <div class="text-sm font-medium text-gray-800">${file.name}</div>
-                                            <div class="text-xs text-gray-500">${(file.size / 1024).toFixed(1)} KB</div>
-                                        </div>
-                                    </div>
-                                    <button onclick="downloadFile('${file.data}', '${file.name}')" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                        ดาวน์โหลด
-                                    </button>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                    ` : ''}
-                    <div class="grid grid-cols-2 gap-4 text-sm text-gray-500">
-                        <div>
-                            <span class="font-medium">สร้างเมื่อ:</span><br>
-                            ${alert.createdAt.toLocaleDateString('th-TH')} ${alert.createdAt.toLocaleTimeString('th-TH')}
-                        </div>
-                        <div>
-                            <span class="font-medium">อัปเดตล่าสุด:</span><br>
-                            ${alert.updatedAt.toLocaleDateString('th-TH')} ${alert.updatedAt.toLocaleTimeString('th-TH')}
-                        </div>
-                    </div>
-                    <div class="flex gap-2 pt-4">
-                        <button onclick="updateStatus(${alert.id}, 'in-progress')" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg text-sm">
-                            กำลังดำเนินการ
-                        </button>
-                        <button onclick="updateStatus(${alert.id}, 'resolved')" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm">
-                            แก้ไขแล้ว
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('alertModal').classList.remove('hidden');
-            document.getElementById('alertModal').classList.add('flex');
-        }
-
-        // Update alert status
-        function updateStatus(alertId, newStatus) {
-            const alertIndex = alerts.findIndex(a => a.id === alertId);
-            if (alertIndex !== -1) {
-                alerts[alertIndex].status = newStatus;
-                alerts[alertIndex].updatedAt = new Date();
-                renderAlerts();
-                document.getElementById('alertModal').classList.add('hidden');
-                document.getElementById('alertModal').classList.remove('flex');
-                alert('อัปเดตสถานะเรียบร้อยแล้ว');
-            }
-        }
-
-        // Close modal
-        document.getElementById('closeModal').addEventListener('click', function() {
-            document.getElementById('alertModal').classList.add('hidden');
-            document.getElementById('alertModal').classList.remove('flex');
-        });
-
-        // Close modal when clicking outside
-        document.getElementById('alertModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.add('hidden');
-                this.classList.remove('flex');
-            }
-        });
-
-        // View full image
-        function viewFullImage(imageSrc, imageName) {
-            document.getElementById('fullImage').src = imageSrc;
-            document.getElementById('fullImage').alt = imageName;
-            document.getElementById('imageInfo').textContent = imageName;
-            document.getElementById('imageModal').classList.remove('hidden');
-            document.getElementById('imageModal').classList.add('flex');
-        }
-
-        // Close image modal
-        document.getElementById('closeImageModal').addEventListener('click', function() {
-            document.getElementById('imageModal').classList.add('hidden');
-            document.getElementById('imageModal').classList.remove('flex');
-        });
-
-        // Close image modal when clicking outside
-        document.getElementById('imageModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.add('hidden');
-                this.classList.remove('flex');
-            }
-        });
-
-        // Download file function
-        function downloadFile(fileData, fileName) {
-            const link = document.createElement('a');
-            link.href = fileData;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // Initialize the app
-        setupFilters();
-        renderAlerts();
-    </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98413238001dd032',t:'MTc1ODcwNTUyNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
